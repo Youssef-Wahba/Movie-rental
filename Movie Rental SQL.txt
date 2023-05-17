@@ -1,0 +1,192 @@
+/*==============================================================*/
+/* DBMS name:      MySQL 5.0                                    */
+/* Created on:     5/13/2022 6:25:24 PM                         */
+/*==============================================================*/
+
+
+alter table ACTS_IN 
+   drop foreign key FK_ACTS_IN_ACTS_IN_ACTOR;
+
+alter table ACTS_IN 
+   drop foreign key FK_ACTS_IN_ACTS_IN2_MOVIE;
+
+alter table AWARD 
+   drop foreign key FK_AWARD_WON_MOVIE;
+
+alter table MOVIE 
+   drop foreign key FK_MOVIE_ADDS_ADMIN;
+
+alter table RENTAL 
+   drop foreign key FK_RENTAL_HAS_MOVIE;
+
+alter table RENTAL 
+   drop foreign key FK_RENTAL_MAKES_CUSTOMER;
+
+alter table RENTAL 
+   drop foreign key FK_RENTAL_USES_PAYMENTM;
+
+drop table if exists ACTOR;
+
+
+alter table ACTS_IN 
+   drop foreign key FK_ACTS_IN_ACTS_IN_ACTOR;
+
+alter table ACTS_IN 
+   drop foreign key FK_ACTS_IN_ACTS_IN2_MOVIE;
+
+drop table if exists ACTS_IN;
+
+drop table if exists ADMIN;
+
+
+alter table AWARD 
+   drop foreign key FK_AWARD_WON_MOVIE;
+
+drop table if exists AWARD;
+
+drop table if exists CUSTOMER;
+
+
+alter table MOVIE 
+   drop foreign key FK_MOVIE_ADDS_ADMIN;
+
+drop table if exists MOVIE;
+
+drop table if exists PAYMENTMETHOD;
+
+
+alter table RENTAL 
+   drop foreign key FK_RENTAL_MAKES_CUSTOMER;
+
+alter table RENTAL 
+   drop foreign key FK_RENTAL_HAS_MOVIE;
+
+alter table RENTAL 
+   drop foreign key FK_RENTAL_USES_PAYMENTM;
+
+drop table if exists RENTAL;
+
+/*==============================================================*/
+/* Table: ACTOR                                                 */
+/*==============================================================*/
+create table ACTOR
+(
+   AID                  int identity(1,1) not null  comment '',
+   NAME                 varchar(150) not null  comment '',
+   primary key (AID)
+);
+
+/*==============================================================*/
+/* Table: ACTS_IN                                               */
+/*==============================================================*/
+create table ACTS_IN
+(
+   AID                  int not null  comment '',
+   MID                  int not null  comment '',
+   ROLE                 varchar(50) not null  comment '',
+   primary key (AID, MID)
+);
+
+/*==============================================================*/
+/* Table: ADMIN                                                 */
+/*==============================================================*/
+create table ADMIN
+(
+   ADID                 int identity(1,1) not null  comment '',
+   FIRSTNAME            varchar(50) not null  comment '',
+   LASTNAME             varchar(50) not null  comment '',
+   ADDRESS              varchar(500) not null  comment '',
+   PHONE                varchar(15) not null  comment '',
+   EMAIL                varchar(320) not null  comment '',
+   PASSWORD             varchar(255) not null  comment '',
+   primary key (ADID)
+);
+
+/*==============================================================*/
+/* Table: AWARD                                                 */
+/*==============================================================*/
+create table AWARD
+(
+   MID                  int not null  comment '',
+   NAME                 varchar(150) not null  comment '',
+   YEAR                 int not null  comment '',
+   primary key (MID, NAME, YEAR)
+);
+
+/*==============================================================*/
+/* Table: CUSTOMER                                              */
+/*==============================================================*/
+create table CUSTOMER
+(
+   CID                  int identity(1,1) not null  comment '',
+   FIRSTNAME            varchar(50) not null  comment '',
+   LASTNAME             varchar(50) not null  comment '',
+   ADDRESS              varchar(500) not null  comment '',
+   PHONE                varchar(15) not null  comment '',
+   EMAIL                varchar(320) not null  comment '',
+   PASSWORD             varchar(255) not null  comment '',
+   primary key (CID)
+);
+
+/*==============================================================*/
+/* Table: MOVIE                                                 */
+/*==============================================================*/
+create table MOVIE
+(
+   MID                  int identity(1,1) not null  comment '',
+   ADID                 int not null  comment '',
+   TITLE                varchar(255) not null  comment '',
+   DESCRIPTION          longtext  comment '',
+   LANGUAGE             longtext  comment '',
+   RATING               varchar(25) not null  comment '',
+   RELEASEDATE          date not null  comment '',
+   PRICE                decimal  comment '',
+   primary key (MID)
+);
+
+/*==============================================================*/
+/* Table: PAYMENTMETHOD                                         */
+/*==============================================================*/
+create table PAYMENTMETHOD
+(
+   PMID                 int not null  comment '',
+   METHOD               varchar(25) not null  comment '',
+   primary key (PMID)
+);
+
+/*==============================================================*/
+/* Table: RENTAL                                                */
+/*==============================================================*/
+create table RENTAL
+(
+   RID                  int not null  comment '',
+   CID                  int not null  comment '',
+   MID                  int not null  comment '',
+   PMID                 int not null  comment '',
+   RENTALDATE           date not null  comment '',
+   EXPIRYDATE           date not null  comment '',
+   FEE                  decimal not null  comment '',
+   primary key (RID)
+);
+
+alter table ACTS_IN add constraint FK_ACTS_IN_ACTS_IN_ACTOR foreign key (AID)
+      references ACTOR (AID) on delete restrict on update restrict;
+
+alter table ACTS_IN add constraint FK_ACTS_IN_ACTS_IN2_MOVIE foreign key (MID)
+      references MOVIE (MID) on delete restrict on update restrict;
+
+alter table AWARD add constraint FK_AWARD_WON_MOVIE foreign key (MID)
+      references MOVIE (MID) on delete restrict on update restrict;
+
+alter table MOVIE add constraint FK_MOVIE_ADDS_ADMIN foreign key (ADID)
+      references ADMIN (ADID) on delete restrict on update restrict;
+
+alter table RENTAL add constraint FK_RENTAL_HAS_MOVIE foreign key (MID)
+      references MOVIE (MID) on delete restrict on update restrict;
+
+alter table RENTAL add constraint FK_RENTAL_MAKES_CUSTOMER foreign key (CID)
+      references CUSTOMER (CID) on delete restrict on update restrict;
+
+alter table RENTAL add constraint FK_RENTAL_USES_PAYMENTM foreign key (PMID)
+      references PAYMENTMETHOD (PMID) on delete restrict on update restrict;
+
